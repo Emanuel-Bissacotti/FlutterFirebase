@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_firestore_first/_core/my_colors.dart';
+import 'package:flutter_firebase_firestore_first/authentication/screens/auth_screen.dart';
 import 'package:flutter_firebase_firestore_first/firebase_options.dart';
 import 'package:flutter_firebase_firestore_first/firestore/presentation/home_screen.dart';
 
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomeScreen(),
+      home: const AuthScreen(),
     );
   }
 }
