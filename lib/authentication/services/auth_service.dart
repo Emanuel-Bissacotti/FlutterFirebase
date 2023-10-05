@@ -30,13 +30,13 @@ class AuthService {
   }) async {
     try {
       UserCredential userCredential =
-      await _firebaseAuth.createUserWithEmailAndPassword(
+          await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: senha,
       );
 
       await userCredential.user!.updateDisplayName(nome);
-      print("Usuario cadastrado: "+nome);
+      print("Usuario cadastrado: " + nome);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "email-already-in-use":
@@ -55,7 +55,28 @@ class AuthService {
       if (e.code == "user-not-found") {
         return "E-mail não cadastrado.";
       }
-      print("saida::::: "+e.code);
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> deslogar() async {
+    try {
+      await _firebaseAuth.signOut();
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> removerConta({required String senha}) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: _firebaseAuth.currentUser!.email!,
+        password: senha,
+      );
+      await _firebaseAuth.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
       return e.code;
     }
     return null;

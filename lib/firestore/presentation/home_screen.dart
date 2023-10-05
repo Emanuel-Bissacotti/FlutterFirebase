@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_firestore_first/authentication/component/show_senha-confirmacao_dialog.dart';
+import 'package:flutter_firebase_firestore_first/authentication/services/auth_service.dart';
 import 'package:flutter_firebase_firestore_first/firestore_produtos/presentation/produto_screen.dart';
 import 'package:uuid/uuid.dart';
 import '../models/listin.dart';
@@ -24,6 +26,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              title: Text("Remover conta"),
+              onTap: (){
+                showSenhaConfirmacaoDialog(context: context, email: "");
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text("Sair"),
+              onTap: () {
+                AuthService().deslogar();
+              },
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: const Text("Listin - Feira Colaborativa"),
       ),

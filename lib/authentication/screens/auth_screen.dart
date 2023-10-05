@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';import 'package:flutter_firebase_firestore_first/_core/my_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase_firestore_first/_core/my_colors.dart';
 import 'package:flutter_firebase_firestore_first/authentication/component/show_snackbar.dart';
 import 'package:flutter_firebase_firestore_first/authentication/services/auth_service.dart';
 
@@ -186,13 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   _entrarUsuario({required String email, required String senha}) {
     authService.entrarUsuario(email: email, senha: senha).then((String? erro) {
-      if (erro == null) {
-        showSnackBar(
-          context: context,
-          mensagem: "Conta logada com sucesso",
-          isErro: false,
-        );
-      } else {
+      if (erro != null) {
         showSnackBar(context: context, mensagem: erro);
       }
     });
@@ -204,14 +199,8 @@ class _AuthScreenState extends State<AuthScreen> {
     required String nome,
   }) {
     authService.cadastrarUsuario(email: email, senha: senha, nome: nome).then(
-          (String? erro) {
-        if (erro == null) {
-          showSnackBar(
-            context: context,
-            mensagem: "Conta cadastrada com sucesso.",
-            isErro: false,
-          );
-        } else {
+      (String? erro) {
+        if (erro != null) {
           showSnackBar(context: context, mensagem: erro);
         }
       },
@@ -224,7 +213,7 @@ class _AuthScreenState extends State<AuthScreen> {
       context: context,
       builder: (context) {
         TextEditingController redefincaoSenhaController =
-        TextEditingController(text: email);
+            TextEditingController(text: email);
         return AlertDialog(
           title: const Text("Confirme o e-mail para redefinição de senha"),
           content: TextFormField(
