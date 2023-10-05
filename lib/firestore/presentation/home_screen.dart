@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_firestore_first/authentication/component/show_senha-confirmacao_dialog.dart';
 import 'package:flutter_firebase_firestore_first/authentication/services/auth_service.dart';
+import 'package:flutter_firebase_firestore_first/firestore/services/listin_service.dart';
 import 'package:flutter_firebase_firestore_first/firestore_produtos/presentation/produto_screen.dart';
 import 'package:uuid/uuid.dart';
 import '../models/listin.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final User user;
+
+  const HomeScreen({required this.user, super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,13 +33,21 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: ListView(
           children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture:
+                  CircleAvatar(backgroundColor: Colors.white),
+              accountName: Text((widget.user.displayName != null)
+                  ? widget.user.displayName!
+                  : ""),
+              accountEmail: Text(widget.user.email!),
+            ),
             ListTile(
               leading: const Icon(
                 Icons.delete,
                 color: Colors.red,
               ),
               title: Text("Remover conta"),
-              onTap: (){
+              onTap: () {
                 showSenhaConfirmacaoDialog(context: context, email: "");
               },
             ),
@@ -88,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       onDismissed: (direction) {
-                        remove(model);
+                        ListinService().removerListin(listinId: model.id);
                       },
                       child: ListTile(
                         onTap: () {
@@ -181,10 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
 
                         // Salvar no Firestore
-                        firestore
-                            .collection("listins")
-                            .doc(listin.id)
-                            .set(listin.toMap());
+                        ListinService().adicionarListin(listin: listin);
 
                         //Atualizar Lista
                         refresh();
@@ -202,21 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   refresh() async {
-    List<Listin> temp = [];
-
-    QuerySnapshot<Map<String, dynamic>> snapshot =
-        await firestore.collection("listins").get();
-
-    for (var doc in snapshot.docs) {
-      temp.add(Listin.fromMap(doc.data()));
-    }
+    List<Listin> listaListins = await ListinService().lerListins();
     setState(() {
-      listListins = temp;
+      listListins = listaListins;
     });
-  }
-
-  void remove(Listin model) {
-    firestore.collection('listins').doc(model.id).delete();
-    refresh();
   }
 }
